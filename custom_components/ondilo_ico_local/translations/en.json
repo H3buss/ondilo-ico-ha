@@ -1,0 +1,189 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to the ICO bridge",
+        "description": "The bridge is the program that collects the reports your ICO probe sends. Home Assistant only reads from it.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the machine running the bridge, without http://.",
+          "port": "Port of the read-only API of the bridge, 8099 by default.",
+          "token": "The value of ICO_API_TOKEN, when the bridge was started with one. Leave empty when the bridge needs none.",
+          "scan_interval": "How often Home Assistant asks the bridge for news. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure the ICO bridge",
+        "description": "Change where Home Assistant looks for this bridge.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the machine running the bridge, without http://.",
+          "port": "Port of the read-only API of the bridge, 8099 by default.",
+          "token": "The value of ICO_API_TOKEN, when the bridge was started with one. Leave empty when the bridge needs none.",
+          "scan_interval": "How often Home Assistant asks the bridge for news. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "source": {
+        "title": "How the reports get here",
+        "description": "Choose where Home Assistant should read the ICO reports from. The direct mode needs the DNS rewrite to point at this machine, and port 80 to reach Home Assistant on port 8123, through a forward such as the Ondilo ICO pipe add-on or Nginx Proxy Manager.",
+        "data": {
+          "source": "Where the reports come from"
+        }
+      },
+      "direct": {
+        "title": "Receive ICO reports",
+        "description": "Home Assistant answers the probe itself, on the same three routes the Ondilo cloud does. Until the DNS rewrite and the port 80 forward are in place the entry is created but stays quiet, which is a safe way to prepare the cutover.",
+        "data": {
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address.",
+          "scan_interval": "How often Home Assistant reads the reports it has. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "reconfigure_direct": {
+        "title": "Reconfigure the direct mode",
+        "description": "These settings are about the reports Home Assistant receives from the probe itself.",
+        "data": {
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS"
+        },
+        "data_description": {
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the ICO bridge at that address. Check that the bridge is running and that the address is reachable from Home Assistant.",
+      "invalid_auth": "The ICO bridge refused the API token. Check the token, or leave it empty when the bridge was started without one.",
+      "bad_version": "Something answered, but not as an ICO bridge. Check the port, 8099 by default, and the version of the bridge.",
+      "bad_resolver": "That is not an IPv4 address. Home Assistant asks this server over UDP port 53; leave the field empty to use Home Assistant's own resolver instead."
+    },
+    "abort": {
+      "already_configured": "This ICO bridge is already configured.",
+      "direct_already_configured": "Home Assistant already receives ICO reports directly."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Refreshing",
+        "data": {
+          "scan_interval": "Refresh interval",
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS"
+        },
+        "data_description": {
+          "scan_interval": "How often Home Assistant asks the bridge for news. The probe reports about once an hour, so a longer interval loses nothing.",
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "ph": {
+        "name": "pH electrode potential",
+        "description": "Millivolts on the pH electrode, not a pH. Converting them takes the offset recorded by the probe's own calibration, and the report does not carry it."
+      },
+      "orp": {
+        "name": "ORP"
+      },
+      "conductivity": {
+        "name": "Conductivity (raw)",
+        "description": "cond+ minus cond-, as the probe sends them. The firmware names no unit for these two readings and the difference is our own construction, so the number has no unit until one is proven."
+      },
+      "conductivity_pos": {
+        "name": "Conductivity electrode positive"
+      },
+      "conductivity_neg": {
+        "name": "Conductivity electrode negative"
+      },
+      "battery": {
+        "name": "Battery"
+      },
+      "battery_voltage": {
+        "name": "Battery voltage"
+      },
+      "battery_temperature": {
+        "name": "Battery temperature"
+      },
+      "wifi_rssi": {
+        "name": "Wi-Fi RSSI"
+      },
+      "last_report": {
+        "name": "Last report"
+      },
+      "bridge_mode": {
+        "name": "Collection mode"
+      },
+      "retry": {
+        "name": "Retries"
+      },
+      "measure_count": {
+        "name": "Measures in report"
+      },
+      "measure_seq": {
+        "name": "Measure number"
+      },
+      "device_clock": {
+        "name": "Device clock"
+      },
+      "report_clock": {
+        "name": "Report clock"
+      },
+      "ico_uuid": {
+        "name": "ICO UUID"
+      },
+      "firmware_build": {
+        "name": "Firmware build"
+      },
+      "firmware": {
+        "name": "Firmware"
+      }
+    },
+    "binary_sensor": {
+      "usb_power": {
+        "name": "USB power",
+        "state": {
+          "on": "Plugged in",
+          "off": "Unplugged"
+        }
+      }
+    }
+  },
+  "device": {
+    "bridge": {
+      "name": "Ondilo ICO bridge (local)"
+    },
+    "ico": {
+      "name": "Ondilo ICO (local) {short_id}"
+    },
+    "receiver": {
+      "name": "Ondilo ICO receiver (local)"
+    }
+  },
+  "exceptions": {
+    "update_error": {
+      "message": "Could not get data from the Ondilo ICO bridge (local): {error}"
+    }
+  }
+}
