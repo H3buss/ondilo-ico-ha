@@ -1,0 +1,17 @@
+{
+  "domain": "ondilo_ico_local",
+  "name": "Ondilo ICO (local)",
+  "codeowners": [
+    "@H3buss"
+  ],
+  "config_flow": true,
+  "integration_type": "hub",
+  "iot_class": "local_polling",
+  "requirements": [],
+  "dependencies": [
+    "http"
+  ],
+  "version": "1.3.3",
+  "documentation": "https://github.com/H3buss/ondilo-ico-ha",
+  "issue_tracker": "https://github.com/H3buss/ondilo-ico-ha/issues"
+}
