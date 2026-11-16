@@ -1,0 +1,4 @@
+# normalise les fins de ligne : le depot est en LF, le checkout windows aussi
+* text=auto eol=lf
+*.png binary
+*.ico binary

@@ -1,0 +1,32 @@
+{
+  "entity": {
+    "sensor": {
+      "ph": {
+        "default": "mdi:flask-outline"
+      },
+      "orp": {
+        "default": "mdi:shield-check-outline"
+      },
+      "conductivity": {
+        "default": "mdi:water-opacity"
+      },
+      "wifi_rssi": {
+        "default": "mdi:wifi"
+      },
+      "last_report": {
+        "default": "mdi:clock-outline"
+      },
+      "measure_count": {
+        "default": "mdi:counter"
+      },
+      "measure_seq": {
+        "default": "mdi:numeric"
+      }
+    },
+    "binary_sensor": {
+      "usb_power": {
+        "default": "mdi:usb-port"
+      }
+    }
+  }
+}

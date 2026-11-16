@@ -1,0 +1,235 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connecter le pont ICO",
+        "description": "Le pont est le programme qui collecte les rapports envoyés par votre sonde ICO. Home Assistant ne fait que le lire.",
+        "data": {
+          "host": "Hôte",
+          "port": "Port",
+          "token": "Jeton d'API",
+          "scan_interval": "Fréquence d'actualisation"
+        },
+        "data_description": {
+          "host": "Adresse IP ou nom de la machine qui exécute le pont, sans http://.",
+          "port": "Port de l'API en lecture seule du pont, 8099 par défaut.",
+          "token": "La valeur de ICO_API_TOKEN, si le pont a été démarré avec un jeton. Laisser vide quand le pont n'en exige aucun.",
+          "scan_interval": "Fréquence à laquelle Home Assistant demande des nouvelles au pont. La sonde prévient environ une fois par heure : une valeur élevée ne fait rien perdre."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigurer le pont ICO",
+        "description": "Changez l'endroit où Home Assistant cherche ce pont.",
+        "data": {
+          "host": "Hôte",
+          "port": "Port",
+          "token": "Jeton d'API",
+          "scan_interval": "Fréquence d'actualisation"
+        },
+        "data_description": {
+          "host": "Adresse IP ou nom de la machine qui exécute le pont, sans http://.",
+          "port": "Port de l'API en lecture seule du pont, 8099 par défaut.",
+          "token": "La valeur de ICO_API_TOKEN, si le pont a été démarré avec un jeton. Laisser vide quand le pont n'en exige aucun.",
+          "scan_interval": "Fréquence à laquelle Home Assistant demande des nouvelles au pont. La sonde prévient environ une fois par heure : une valeur élevée ne fait rien perdre."
+        }
+      },
+      "source": {
+        "title": "D'où viennent les mesures",
+        "description": "Choisis où Home Assistant doit lire les rapports de l'ICO. Le mode direct demande que le DNS détourne app.ondilo.com vers cette machine et que le port 80 atteigne Home Assistant sur le port 8123, par exemple avec l'add-on Ondilo ICO pipe ou Nginx Proxy Manager.",
+        "data": {
+          "source": "Source des mesures"
+        }
+      },
+      "direct": {
+        "title": "Recevoir les rapports de l'ICO",
+        "description": "Home Assistant répond lui-même à la sonde, sur les trois mêmes routes que le nuage Ondilo. Tant que le détournement DNS et la redirection du port 80 ne sont pas en place, l'entrée est créée mais reste silencieuse, ce qui permet de préparer la bascule sans risque.",
+        "data": {
+          "forward": "Retransmettre à Ondilo",
+          "resolver": "DNS de confiance",
+          "scan_interval": "Intervalle de rafraîchissement"
+        },
+        "data_description": {
+          "forward": "Renvoie aussi le rapport au vrai serveur Ondilo, octet pour octet et avec son en-tête Host d'origine, pour que l'application Ondilo continue de fonctionner. Coupe cette option pour un fonctionnement entièrement local.",
+          "resolver": "Adresse IP d'un serveur DNS qui ne connaît pas le détournement, en général ta box, pour retrouver le vrai serveur Ondilo. Laisse vide quand le DNS de Home Assistant répond déjà la vraie adresse.",
+          "scan_interval": "À quelle fréquence Home Assistant relit les rapports qu'il a reçus. La sonde mesure environ une fois par heure, donc un intervalle plus long ne coûte rien."
+        }
+      },
+      "reconfigure_direct": {
+        "title": "Reconfigurer la réception directe",
+        "description": "Ces réglages concernent les rapports que Home Assistant reçoit directement de la sonde.",
+        "data": {
+          "forward": "Retransmettre à Ondilo",
+          "resolver": "DNS de confiance"
+        },
+        "data_description": {
+          "forward": "Renvoie aussi le rapport au vrai serveur Ondilo, octet pour octet et avec son en-tête Host d'origine, pour que l'application Ondilo continue de fonctionner. Coupe cette option pour un fonctionnement entièrement local.",
+          "resolver": "Adresse IP d'un serveur DNS qui ne connaît pas le détournement, en général ta box, pour retrouver le vrai serveur Ondilo. Laisse vide quand le DNS de Home Assistant répond déjà la vraie adresse."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Impossible de joindre le pont ICO à cette adresse. Vérifiez que le pont tourne et qu'il est accessible depuis Home Assistant.",
+      "invalid_auth": "Le pont ICO a refusé le jeton d'API. Vérifiez le jeton, ou laissez-le vide quand le pont a été démarré sans jeton.",
+      "bad_version": "Quelque chose a répondu, mais pas comme un pont ICO. Vérifiez le port, 8099 par défaut, et la version du pont.",
+      "bad_resolver": "Ce n'est pas une adresse IPv4. Home Assistant interroge ce serveur en UDP sur le port 53 ; laisse le champ vide pour utiliser le résolveur de Home Assistant."
+    },
+    "abort": {
+      "already_configured": "Ce pont ICO est déjà configuré.",
+      "direct_already_configured": "Home Assistant reçoit déjà les rapports ICO en direct."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Actualisation",
+        "data": {
+          "scan_interval": "Délai avant indisponibilité",
+          "stale_after": "Délai avant indisponibilité",
+          "forward": "Retransmettre à Ondilo",
+          "resolver": "DNS de confiance"
+        },
+        "data_description": {
+          "scan_interval": "Temps d'attente après le dernier rapport avant que les entités de la sonde passent en indisponible. La sonde prévient environ une fois par heure et ses rapports arrivent parfois par salves : augmente ce délai si le tableau de bord grise alors que la sonde va bien.",
+          "stale_after": "Temps d'attente après le dernier rapport avant que les entités de la sonde passent en indisponible. La sonde prévient environ une fois par heure et ses rapports arrivent parfois par salves : augmente ce délai si le tableau de bord grise alors que la sonde va bien.",
+          "forward": "Renvoie aussi le rapport au vrai serveur Ondilo, octet pour octet et avec son en-tête Host d'origine, pour que l'application Ondilo continue de fonctionner. Coupe cette option pour un fonctionnement entièrement local.",
+          "resolver": "Adresse IP d'un serveur DNS qui ne connaît pas le détournement, en général ta box, pour retrouver le vrai serveur Ondilo. Laisse vide quand le DNS de Home Assistant répond déjà la vraie adresse."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Température"
+      },
+      "ph": {
+        "name": "Potentiel de l'électrode pH",
+        "description": "Des millivolts sur l'électrode de pH, pas un pH. La conversion demande le décalage enregistré par la calibration de la sonde, et le rapport ne le transporte pas."
+      },
+      "orp": {
+        "name": "ORP"
+      },
+      "conductivity": {
+        "name": "Conductivité (brut)",
+        "description": "cond+ moins cond-, tels que la sonde les envoie. Le micrologiciel ne nomme aucune unité pour ces deux lectures et la soustraction est de notre façon : le nombre reste sans unité tant qu'elle n'est pas prouvée."
+      },
+      "conductivity_pos": {
+        "name": "Électrode de conductivité +"
+      },
+      "conductivity_neg": {
+        "name": "Électrode de conductivité -"
+      },
+      "battery": {
+        "name": "Batterie"
+      },
+      "battery_voltage": {
+        "name": "Tension de la batterie"
+      },
+      "battery_temperature": {
+        "name": "Température de la batterie"
+      },
+      "wifi_rssi": {
+        "name": "RSSI Wi-Fi"
+      },
+      "last_report": {
+        "name": "Dernier rapport"
+      },
+      "bridge_mode": {
+        "name": "Mode de collecte"
+      },
+      "retry": {
+        "name": "Tentatives d'envoi"
+      },
+      "measure_count": {
+        "name": "Mesures du rapport"
+      },
+      "measure_seq": {
+        "name": "Numéro de mesure"
+      },
+      "device_clock": {
+        "name": "Horloge de l'appareil"
+      },
+      "report_clock": {
+        "name": "Horloge du rapport"
+      },
+      "ico_uuid": {
+        "name": "UUID ICO"
+      },
+      "firmware_build": {
+        "name": "Version brute du micrologiciel"
+      },
+      "firmware": {
+        "name": "Micrologiciel"
+      },
+      "ph_estimated": {
+        "name": "pH estimé",
+        "description": "pH calculé à partir du potentiel de l'électrode, de la température mesurée et de la calibration de cette sonde. Reste indisponible tant qu'un point de calibration n'a pas été capturé."
+      },
+      "tds_estimated": {
+        "name": "TDS estimé",
+        "description": "Solides dissous calculés à partir des comptes de la cellule et du facteur de calibration. Reste indisponible tant qu'un point de calibration n'a pas été capturé."
+      }
+    },
+    "binary_sensor": {
+      "usb_power": {
+        "name": "Alimentation USB",
+        "state": {
+          "on": "Branchée",
+          "off": "Débranchée"
+        }
+      }
+    },
+    "button": {
+      "calibrate_ph": {
+        "name": "Capturer le point de calibration pH",
+        "description": "Enregistre le potentiel mesuré actuellement comme celui du tampon indiqué dans « Tampon pH ». Tampon 7,00 seul : la pente de Nernst est conservée. Une seconde capture dans un tampon différent (4,01 par exemple) remplace la pente théorique par la pente mesurée de la sonde. La sonde doit avoir envoyé un rapport depuis qu'elle est dans le verre."
+      },
+      "calibrate_tds": {
+        "name": "Capturer le point de calibration conductivité",
+        "description": "Convertit la lecture de conductivité en cours avec la solution étalon indiquée dans « ppm connu ». Utiliser une solution étalon, ou le TDS que donne l'application Ondilo pour la même eau."
+      },
+      "reset_calibration": {
+        "name": "Effacer la calibration",
+        "description": "Oublie le décalage, la pente et le facteur capturés : les lectures brutes restent seules affichées, et les deux capteurs estimés deviennent indisponibles."
+      }
+    },
+    "number": {
+      "calibration_buffer_ph": {
+        "name": "Tampon pH",
+        "description": "La valeur du tampon dans lequel la sonde trempe, telle que la bouteille l'annonce. À régler avant de capturer. 7,00 par défaut."
+      },
+      "calibration_known_ppm": {
+        "name": "ppm connu",
+        "description": "Les ppm de la solution étalon dans laquelle la sonde trempe. À régler avant de capturer la conductivité."
+      },
+      "calibration_ph_offset": {
+        "name": "Décalage de l'électrode pH",
+        "description": "Le potentiel que cette électrode donne à pH 7, en millivolts. C'est la valeur que le cloud Ondilo garde pour lui : le capturer ici le remplace. Modifiable à la main si on le connaît déjà."
+      },
+      "calibration_ph_slope": {
+        "name": "Pente de l'électrode pH",
+        "description": "Millivolts par unité de pH à 25 °C. 59,16 est la pente de Nernst d'une électrode idéale ; deux tampons la remplacent par la pente réelle de la sonde. La compensation en température est appliquée avec la température mesurée par la sonde."
+      },
+      "calibration_tds_factor": {
+        "name": "Facteur de conductivité",
+        "description": "ppm par compte de cellule. Le micrologiciel ne nomme aucune unité pour les deux électrodes : ce facteur est ce que la calibration mesure sur ton bassin, pas une constante publiée par Ondilo."
+      }
+    }
+  },
+  "device": {
+    "bridge": {
+      "name": "Pont Ondilo ICO (local)"
+    },
+    "ico": {
+      "name": "Ondilo ICO (local) {short_id}"
+    },
+    "receiver": {
+      "name": "Récepteur Ondilo ICO (local)"
+    }
+  },
+  "exceptions": {
+    "update_error": {
+      "message": "Impossible d'obtenir les données du pont Ondilo ICO : {error}"
+    }
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to the ICO bridge",
+        "description": "The bridge is the program that collects the reports your ICO probe sends. Home Assistant only reads from it.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the machine running the bridge, without http://.",
+          "port": "Port of the read-only API of the bridge, 8099 by default.",
+          "token": "The value of ICO_API_TOKEN, when the bridge was started with one. Leave empty when the bridge needs none.",
+          "scan_interval": "How often Home Assistant asks the bridge for news. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure the ICO bridge",
+        "description": "Change where Home Assistant looks for this bridge.",
+        "data": {
+          "host": "Host",
+          "port": "Port",
+          "token": "API token",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "host": "IP address or hostname of the machine running the bridge, without http://.",
+          "port": "Port of the read-only API of the bridge, 8099 by default.",
+          "token": "The value of ICO_API_TOKEN, when the bridge was started with one. Leave empty when the bridge needs none.",
+          "scan_interval": "How often Home Assistant asks the bridge for news. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "source": {
+        "title": "How the reports get here",
+        "description": "Choose where Home Assistant should read the ICO reports from. The direct mode needs the DNS rewrite to point at this machine, and port 80 to reach Home Assistant on port 8123, through a forward such as the Ondilo ICO pipe add-on or Nginx Proxy Manager.",
+        "data": {
+          "source": "Where the reports come from"
+        }
+      },
+      "direct": {
+        "title": "Receive ICO reports",
+        "description": "Home Assistant answers the probe itself, on the same three routes the Ondilo cloud does. Until the DNS rewrite and the port 80 forward are in place the entry is created but stays quiet, which is a safe way to prepare the cutover.",
+        "data": {
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS",
+          "scan_interval": "Refresh interval"
+        },
+        "data_description": {
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address.",
+          "scan_interval": "How often Home Assistant reads the reports it has. The probe reports about once an hour, so a longer interval loses nothing."
+        }
+      },
+      "reconfigure_direct": {
+        "title": "Reconfigure the direct mode",
+        "description": "These settings are about the reports Home Assistant receives from the probe itself.",
+        "data": {
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS"
+        },
+        "data_description": {
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the ICO bridge at that address. Check that the bridge is running and that the address is reachable from Home Assistant.",
+      "invalid_auth": "The ICO bridge refused the API token. Check the token, or leave it empty when the bridge was started without one.",
+      "bad_version": "Something answered, but not as an ICO bridge. Check the port, 8099 by default, and the version of the bridge.",
+      "bad_resolver": "That is not an IPv4 address. Home Assistant asks this server over UDP port 53; leave the field empty to use Home Assistant's own resolver instead."
+    },
+    "abort": {
+      "already_configured": "This ICO bridge is already configured.",
+      "direct_already_configured": "Home Assistant already receives ICO reports directly."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Refreshing",
+        "data": {
+          "scan_interval": "Data timeout",
+          "stale_after": "Data timeout",
+          "forward": "Forward to Ondilo",
+          "resolver": "Trusted DNS"
+        },
+        "data_description": {
+          "scan_interval": "How long to wait after the last report before the probe's entities turn unavailable. The probe reports about once an hour, and its reports can arrive in bursts, so raise this if the dashboard turns grey while the probe is fine.",
+          "stale_after": "How long to wait after the last report before the probe's entities turn unavailable. The probe reports about once an hour, and its reports can arrive in bursts, so raise this if the dashboard turns grey while the probe is fine.",
+          "forward": "Send the report to the real Ondilo server as well, byte for byte and with its original Host header, so the Ondilo app keeps working. Turn this off for a fully local setup.",
+          "resolver": "IP address of a DNS server that does not know about the rewrite, usually your router, used to find the real Ondilo server. Leave empty when Home Assistant's own DNS already answers with the real address."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      },
+      "ph": {
+        "name": "pH electrode potential",
+        "description": "Millivolts on the pH electrode, not a pH. Converting them takes the offset recorded by the probe's own calibration, and the report does not carry it."
+      },
+      "orp": {
+        "name": "ORP"
+      },
+      "conductivity": {
+        "name": "Conductivity (raw)",
+        "description": "cond+ minus cond-, as the probe sends them. The firmware names no unit for these two readings and the difference is our own construction, so the number has no unit until one is proven."
+      },
+      "conductivity_pos": {
+        "name": "Conductivity electrode positive"
+      },
+      "conductivity_neg": {
+        "name": "Conductivity electrode negative"
+      },
+      "battery": {
+        "name": "Battery"
+      },
+      "battery_voltage": {
+        "name": "Battery voltage"
+      },
+      "battery_temperature": {
+        "name": "Battery temperature"
+      },
+      "wifi_rssi": {
+        "name": "Wi-Fi RSSI"
+      },
+      "last_report": {
+        "name": "Last report"
+      },
+      "bridge_mode": {
+        "name": "Collection mode"
+      },
+      "retry": {
+        "name": "Retries"
+      },
+      "measure_count": {
+        "name": "Measures in report"
+      },
+      "measure_seq": {
+        "name": "Measure number"
+      },
+      "device_clock": {
+        "name": "Device clock"
+      },
+      "report_clock": {
+        "name": "Report clock"
+      },
+      "ico_uuid": {
+        "name": "ICO UUID"
+      },
+      "firmware_build": {
+        "name": "Firmware build"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "ph_estimated": {
+        "name": "Estimated pH",
+        "description": "pH computed from the electrode potential, the measured temperature and the calibration of this probe. Stays unavailable until a calibration point has been captured."
+      },
+      "tds_estimated": {
+        "name": "Estimated TDS",
+        "description": "Dissolved solids computed from the cell counts and the calibration factor. Stays unavailable until a calibration point has been captured."
+      }
+    },
+    "binary_sensor": {
+      "usb_power": {
+        "name": "USB power",
+        "state": {
+          "on": "Plugged in",
+          "off": "Unplugged"
+        }
+      }
+    },
+    "button": {
+      "calibrate_ph": {
+        "name": "Capture pH calibration point",
+        "description": "Records the potential being measured right now as the one of the buffer named in pH buffer. A pH 7.00 buffer alone keeps the Nernst slope; capturing a second buffer (4.01 for instance) replaces it with the slope of this electrode. The probe has to have reported since it went into the glass."
+      },
+      "calibrate_tds": {
+        "name": "Capture conductivity calibration point",
+        "description": "Turns the conductivity reading in hand into the known ppm. Use a standard solution, or the TDS the Ondilo app shows for the same water."
+      },
+      "reset_calibration": {
+        "name": "Clear calibration",
+        "description": "Forgets the captured offset, slope and factor: only the raw readings stay on screen, and the two estimated sensors go unavailable."
+      }
+    },
+    "number": {
+      "calibration_buffer_ph": {
+        "name": "pH buffer",
+        "description": "The value of the buffer the probe is sitting in, as the bottle labels it. Set it before capturing. 7.00 by default."
+      },
+      "calibration_known_ppm": {
+        "name": "Known ppm",
+        "description": "The ppm of the standard the probe is sitting in. Set it before capturing the conductivity."
+      },
+      "calibration_ph_offset": {
+        "name": "pH electrode offset",
+        "description": "The potential this electrode gives at pH 7, in millivolts. It is the number the Ondilo cloud keeps to itself; capturing one here replaces it. Type it directly if it is already known."
+      },
+      "calibration_ph_slope": {
+        "name": "pH electrode slope",
+        "description": "Millivolts per pH unit at 25 C. 59.16 is the Nernst slope of an ideal electrode; two buffers replace it with the slope of this probe. Temperature compensation uses the temperature the probe measures."
+      },
+      "calibration_tds_factor": {
+        "name": "Conductivity factor",
+        "description": "ppm per cell count. The firmware names no unit for the two electrodes, so this factor is what a calibration measures on your own pool, not a constant Ondilo published."
+      }
+    }
+  },
+  "device": {
+    "bridge": {
+      "name": "Ondilo ICO bridge (local)"
+    },
+    "ico": {
+      "name": "Ondilo ICO (local) {short_id}"
+    },
+    "receiver": {
+      "name": "Ondilo ICO receiver (local)"
+    }
+  },
+  "exceptions": {
+    "update_error": {
+      "message": "Could not get data from the Ondilo ICO bridge (local): {error}"
+    }
+  }
+}
